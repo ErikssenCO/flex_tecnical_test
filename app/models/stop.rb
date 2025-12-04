@@ -11,7 +11,7 @@ class Stop < ApplicationRecord
     removed: 5
     }, prefix: true
 
-  before_save :set_position, :change_status
+  before_create :set_position, :change_status
 
   def set_position
     last_stop = manifest.stops.order(position: :desc).first
@@ -21,5 +21,15 @@ class Stop < ApplicationRecord
   def change_status
     self.status = Stop.statuses[:pending] if manifest.status_pending? || manifest.status_scheduled?
     self.status = Stop.statuses[:in_route] if manifest.status_in_route?
+  end
+
+  def complete
+    return [false, "Stop already completed"] if completed_at.present?
+
+    debugger
+
+    self.status = Stop.statuses[:complete]
+    self.completed_at = Time.zone.now
+    [save!, nil]
   end
 end

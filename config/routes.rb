@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       resources :stops, only: [:create] do
         member do
           post :remove
+          patch :complete
         end
       end
       resources :manifests, only: [:index, :show, :create] do

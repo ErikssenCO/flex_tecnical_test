@@ -1,5 +1,5 @@
 class Api::V1::StopsController < ApplicationController
-  before_action :get_stop, only: [:remove]
+  before_action :get_stop, only: [:remove, :complete]
   before_action :validate_stop, only: [:create]
 
   def create
@@ -18,6 +18,15 @@ class Api::V1::StopsController < ApplicationController
       render json: { message: "Stop removed successfully." }, status: :ok
     else
       render json: { errors: @stop.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def complete
+    success, message = @stop.complete
+    if success
+      render json: @stop, serializer: ::Api::V1::StopSerializer, status: :ok
+    else
+      render json: { errors: message || @stop.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
