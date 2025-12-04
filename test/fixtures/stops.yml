@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  position: 1
+  status: 
+  notes: MyString
+  location: one
+  manifest: one
+
+two:
+  position: 1
+  status: 
+  notes: MyString
+  location: two
+  manifest: two

@@ -18,6 +18,7 @@ Rails.application.routes.draw do
           post :remove
         end
       end
+      resources :manifests, only: [:index, :show, :create]
     end
   end
 end
