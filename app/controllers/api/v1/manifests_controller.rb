@@ -13,12 +13,12 @@ class Api::V1::ManifestsController < ApplicationController
 
   def create
     @manifest = Manifest.new(manifest_params)
-    @manifest.created_by = @current_user
+    success, message = @manifest.save_manifest(employee: @current_user)
 
-    if @manifest.save
+    if success
       render json: @manifest, serializer: ::Api::V1::ManifestSerializer, status: :created
     else
-      render json: { errors: @manifest.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: message || @manifest.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

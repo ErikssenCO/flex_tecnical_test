@@ -26,8 +26,6 @@ class Stop < ApplicationRecord
   def complete
     return [false, "Stop already completed"] if completed_at.present?
 
-    debugger
-
     self.status = Stop.statuses[:complete]
     self.completed_at = Time.zone.now
     [save!, nil]

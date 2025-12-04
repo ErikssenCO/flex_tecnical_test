@@ -45,7 +45,7 @@ class Api::V1::StopsController < ApplicationController
     return render json: { errors: "manifest does not exist" } unless manifest
 
     location = Location.where(id: stop_params[:location_id]).first
-    return render json: { errors: "location does not exist" } unless manifest
+    return render json: { errors: "location does not exist" } unless location
 
     manifest_locations = [manifest.original_location_id, manifest.destination_location_id]
     manifest_stop_locations = manifest.stops.pluck(:location_id)

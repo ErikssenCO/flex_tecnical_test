@@ -6,4 +6,8 @@ class Driver < ApplicationRecord
     inactive: 1,
     suspended: 2
     }, prefix: true
+
+    def is_active?
+      self.status_active?
+    end
 end
