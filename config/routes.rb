@@ -10,4 +10,14 @@ Rails.application.routes.draw do
 
   resources :employees, only: [:index, :show, :create]
   post "login", to: "sessions#create"
+
+  namespace :api do
+    namespace :v1 do
+      resources :stops, only: [:create] do
+        member do
+          post :remove
+        end
+      end
+    end
+  end
 end

@@ -4,6 +4,8 @@ class SessionsController < ApplicationController
 
   def create
     @user = Employee.find_by(email: params[:email])
+    return render json: { errors: 'User not found, create a new user.' }, status: :unauthorized if @user.nil?
+
     if @user&.authenticate(params[:password])
       token = jwt_encode(user_id: @user.id)
 

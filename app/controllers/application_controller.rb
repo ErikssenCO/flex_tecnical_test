@@ -14,7 +14,7 @@ class ApplicationController < ActionController::API
     decoded = jwt_decode(header)
     @current_user = Employee.find(decoded[:user_id]) if decoded
 
-    return render json: { errors: 'Caducated session, please, login again' }, status: :unauthorized unless @current_user
+    return render json: { errors: 'Session expired, please, login again' }, status: :unauthorized unless @current_user
   rescue ActiveRecord::RecordNotFound, JWT::DecodeError
     render json: { errors: 'Unauthorized' }, status: :unauthorized
   end
