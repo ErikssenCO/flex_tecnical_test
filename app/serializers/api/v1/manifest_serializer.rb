@@ -34,7 +34,11 @@ class ::Api::V1::ManifestSerializer < ActiveModel::Serializer
   end
 
   def vehicle
-    manifest.vehicle.plate
+    {
+      id: manifest.vehicle.id,
+      plate: manifest.vehicle.plate,
+      vehicle_type: manifest.vehicle.vehicle_type.name
+    }
   end
 
   def created_by

@@ -9,6 +9,6 @@ class CreateStops < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-    add_index :stops, [:manifest_id, :position, :status]
+    add_index :stops, [:status, :complete_at, :position]
   end
 end

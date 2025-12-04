@@ -8,4 +8,8 @@ class Vehicle < ApplicationRecord
     suspended: 2,
     maintenance: 3
     }, prefix: true
+
+    def is_active?
+      self.status_active?
+    end
 end
