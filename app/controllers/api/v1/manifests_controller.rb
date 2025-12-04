@@ -1,6 +1,6 @@
 class Api::V1::ManifestsController < ApplicationController
 
-  before_action :get_manifest, only: [:show]
+  before_action :get_manifest, only: [:show, :start]
 
   def index
     @manifests = Manifest.all
@@ -16,9 +16,19 @@ class Api::V1::ManifestsController < ApplicationController
     @manifest.created_by = @current_user
 
     if @manifest.save
-      render json: @manifest, status: :created
+      render json: @manifest, serializer: ::Api::V1::ManifestSerializer, status: :created
     else
       render json: { errors: @manifest.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def start
+    success, message = @manifest.start_route
+
+    if success
+      render json: @manifest, serializer: ::Api::V1::ManifestSerializer, status: :ok
+    else
+      render json: { errors: message || @manifest.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

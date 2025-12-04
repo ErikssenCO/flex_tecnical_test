@@ -6,7 +6,10 @@ class ::Api::V1::ManifestSerializer < ActiveModel::Serializer
              :destination_location,
              :driver,
              :vehicle,
-             :created_by
+             :created_by,
+             :started_at,
+             :ended_at, 
+             :status
 
   has_many :stops
 
@@ -36,6 +39,30 @@ class ::Api::V1::ManifestSerializer < ActiveModel::Serializer
 
   def created_by
     manifest.created_by.name
+  end
+
+  def started_at
+    manifest.started_at&.strftime("%d/%m/%Y %H:%M %p")
+  end
+
+  def ended_at
+    manifest.ended_at&.strftime("%d/%m/%Y %H:%M %p")
+  end
+
+  def status
+    manifest.status
+  end
+
+  def stops
+    manifest.stops.map do |stop|
+      {
+        id: stop.id,
+        location: stop.location.name,
+        created_at: stop.created_at&.strftime("%d/%m/%Y %H:%M %p"),
+        completed_at: stop.completed_at&.strftime("%d/%m/%Y %H:%M %p"),
+        status: stop.status
+      }
+    end
   end
 
   private

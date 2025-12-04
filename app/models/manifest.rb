@@ -15,4 +15,21 @@ class Manifest < ApplicationRecord
     cancelled: 4,
     failed: 5
     }, prefix: true
+
+
+  def start_route
+    return [false, "Manifest already started"] if started_at.present?
+
+    self.status = Manifest.statuses[:in_route]
+    self.started_at = Time.zone.now
+
+    start_stops
+
+    [save!, nil]
+  end 
+
+  def start_stops
+    pending_stops = stops.status_pending
+    pending_stops.each(&:status_in_route!)
+  end
 end

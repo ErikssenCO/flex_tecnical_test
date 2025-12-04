@@ -18,7 +18,11 @@ Rails.application.routes.draw do
           post :remove
         end
       end
-      resources :manifests, only: [:index, :show, :create]
+      resources :manifests, only: [:index, :show, :create] do
+        member do
+          patch :start
+        end
+      end
     end
   end
 end
