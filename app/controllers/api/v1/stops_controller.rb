@@ -1,13 +1,12 @@
 class Api::V1::StopsController < ApplicationController
-
-  before_action :get_stop, only: [:remove]
+  before_action :get_stop, only: [:remove, :complete]
   before_action :validate_stop, only: [:create]
 
   def create
     @stop = Stop.new(stop_params)
 
-    if @stop.save
-      render json: { id: @stop.id, name: @stop.name }, status: :created
+    if @stop.save!
+      render json: @stop, serializer: ::Api::V1::StopSerializer, status: :created
     else
       render json: { errors: @stop.errors.full_messages }, status: :unprocessable_entity
     end
@@ -19,6 +18,15 @@ class Api::V1::StopsController < ApplicationController
       render json: { message: "Stop removed successfully." }, status: :ok
     else
       render json: { errors: @stop.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def complete
+    success, message = @stop.complete
+    if success
+      render json: @stop, serializer: ::Api::V1::StopSerializer, status: :ok
+    else
+      render json: { errors: message || @stop.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -40,6 +48,14 @@ class Api::V1::StopsController < ApplicationController
     return render json: { errors: "location does not exist" } unless manifest
 
     manifest_locations = [manifest.original_location_id, manifest.destination_location_id]
-    return render json: { errors: "must be either the original or destination location of the manifest" } unless manifest
+    manifest_stop_locations = manifest.stops.pluck(:location_id)
+    if manifest_stop_locations.include?(location.id) || manifest_locations.include?(location.id)
+      return render json: { errors: "Location already exists in manifest" }
+    end
+
+    invalid_statuses = Manifest.statuses.slice(:completed, :cancelled, :failed)
+    if invalid_statuses.key?(manifest.status)
+      return render json: { errors: "cannot add stop to manifest with status #{manifest.status}" }
+    end
   end
 end

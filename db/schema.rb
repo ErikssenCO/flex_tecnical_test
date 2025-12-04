@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_03_230000) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_04_031139) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -53,12 +53,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_03_230000) do
 
   create_table "locations", force: :cascade do |t|
     t.string "address_line"
-    t.bigint "city_id", null: false
     t.datetime "created_at", null: false
     t.string "name"
     t.datetime "updated_at", null: false
-    t.index ["city_id"], name: "index_locations_on_city_id"
-    t.index ["name", "address_line", "city_id"], name: "index_locations_on_name_and_address_line_and_city_id"
   end
 
   create_table "manifests", force: :cascade do |t|
@@ -66,11 +63,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_03_230000) do
     t.bigint "created_by_id", null: false
     t.bigint "destination_location_id", null: false
     t.bigint "driver_id", null: false
-    t.datetime "end_at"
+    t.datetime "ended_at"
     t.bigint "original_location_id", null: false
     t.datetime "scheduled_end_at"
     t.datetime "scheduled_start_at"
-    t.datetime "start_at"
+    t.datetime "started_at"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "vehicle_id", null: false
@@ -78,7 +75,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_03_230000) do
     t.index ["destination_location_id"], name: "index_manifests_on_destination_location_id"
     t.index ["driver_id"], name: "index_manifests_on_driver_id"
     t.index ["original_location_id"], name: "index_manifests_on_original_location_id"
-    t.index ["status", "scheduled_start_at", "start_at", "end_at"], name: "idx_on_status_scheduled_start_at_start_at_end_at_65dfd30711"
+    t.index ["status", "scheduled_start_at", "started_at", "ended_at"], name: "idx_on_status_scheduled_start_at_started_at_ended_a_67b3933508"
     t.index ["vehicle_id"], name: "index_manifests_on_vehicle_id"
   end
 
@@ -101,10 +98,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_03_230000) do
   end
 
   create_table "stops", force: :cascade do |t|
+    t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.bigint "location_id", null: false
     t.bigint "manifest_id", null: false
-    t.string "notes"
     t.integer "position"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
@@ -133,7 +130,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_03_230000) do
     t.index ["vehicle_type_id"], name: "index_vehicles_on_vehicle_type_id"
   end
 
-  add_foreign_key "locations", "cities"
   add_foreign_key "manifests", "drivers"
   add_foreign_key "manifests", "employees", column: "created_by_id"
   add_foreign_key "manifests", "locations", column: "destination_location_id"

@@ -56,3 +56,4 @@ end
 gem "jwt"
 gem "bcrypt"
 gem "rolify"
+gem "active_model_serializers"
